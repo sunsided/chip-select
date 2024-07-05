@@ -1,0 +1,26 @@
+[package]
+name = "chip-select"
+version = "0.1.0"
+description = "Chip select GPIO support traits"
+authors = ["Markus Mayer <widemeadows@gmail.com>"]
+categories = ["embedded", "no-std", "no-std::no-alloc", 'hardware-support']
+keywords = ["chip-select", "no-std", "embedded-hal"]
+homepage = "https://github.com/sunsided/chip-select"
+repository = "https://github.com/sunsided/chip-select"
+rust-version = "1.64.0"
+edition = "2021"
+
+[features]
+default = ["hal-0_2"]
+hal-1_0 = ["dep:hal-1_0"]
+hal-0_2 = ["dep:hal-0_2"]
+
+[dependencies.hal-1_0]
+package = "embedded-hal"
+version = "1.0.0"
+optional = true
+
+[dependencies.hal-0_2]
+package = "embedded-hal"
+version = "0.2.7"
+optional = true
