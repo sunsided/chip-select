@@ -22,17 +22,6 @@ use hal_1_0::digital::OutputPin;
 
 /// A chip-select trait.
 pub trait ChipSelect {
-    /// Indicates whether this instance is configured to auto-select the chip on communication.
-    #[must_use]
-    fn is_auto_select(&self) -> bool;
-
-    /// Selects the chip if auto-select is enabled.
-    fn auto_select(&mut self) {
-        if self.is_auto_select() {
-            self.select()
-        }
-    }
-
     /// Selects the chip, driving the line low.
     fn select(&mut self);
 
@@ -58,10 +47,10 @@ pub trait ActiveLow {}
 pub trait ActiveHigh {}
 
 /// A chip select pin with active-low behavior.
-pub struct ChipSelectActiveLow<Pin>(bool, Pin);
+pub struct ChipSelectActiveLow<Pin>(Pin);
 
 /// A chip select pin with active-high behavior.
-pub struct ChipSelectActiveHigh<Pin>(bool, Pin);
+pub struct ChipSelectActiveHigh<Pin>(Pin);
 
 impl<Pin> ChipSelectActiveLow<Pin>
 where
@@ -69,41 +58,23 @@ where
 {
     /// Initialize the chip select.
     pub const fn new(pin: Pin) -> Self {
-        Self(false, pin)
-    }
-
-    /// Enables auto-select on the chip.
-    pub fn with_auto_select(mut self, enabled: bool) -> Self {
-        self.0 = enabled;
-        self
-    }
-
-    /// Indicates whether this instance is configured to auto-select the chip on communication.
-    pub fn is_auto_select(&self) -> bool {
-        self.0
-    }
-
-    /// Selects the chip if auto-select is enabled.
-    pub fn auto_select(&mut self) {
-        if self.0 {
-            self.select()
-        }
+        Self(pin)
     }
 
     /// Selects the chip, driving the line low.
     pub fn select(&mut self) {
-        <Pin as OutputPin>::set_low(&mut self.1).ok();
+        <Pin as OutputPin>::set_low(&mut self.0).ok();
     }
 
     /// Deselects the chip, driving the line high.
     pub fn deselect(&mut self) {
-        <Pin as OutputPin>::set_high(&mut self.1).ok();
+        <Pin as OutputPin>::set_high(&mut self.0).ok();
     }
 
     /// Consumes self and returns the wrapped pin.
     #[must_use]
     pub fn into_inner(self) -> Pin {
-        self.1
+        self.0
     }
 
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
@@ -119,41 +90,23 @@ where
 {
     /// Initialize the chip select.
     pub const fn new(pin: Pin) -> Self {
-        Self(false, pin)
-    }
-
-    /// Enables auto-select on the chip.
-    pub fn with_auto_select(mut self, enabled: bool) -> Self {
-        self.0 = enabled;
-        self
-    }
-
-    /// Indicates whether this instance is configured to auto-select the chip on communication.
-    pub fn is_auto_select(&self) -> bool {
-        self.0
-    }
-
-    /// Selects the chip if auto-select is enabled.
-    pub fn auto_select(&mut self) {
-        if self.0 {
-            self.select()
-        }
+        Self(pin)
     }
 
     /// Selects the chip, driving the line high.
     pub fn select(&mut self) {
-        <Pin as OutputPin>::set_high(&mut self.1).ok();
+        <Pin as OutputPin>::set_high(&mut self.0).ok();
     }
 
     /// Deselects the chip, driving the line low.
     pub fn deselect(&mut self) {
-        <Pin as OutputPin>::set_low(&mut self.1).ok();
+        <Pin as OutputPin>::set_low(&mut self.0).ok();
     }
 
     /// Consumes self and returns the wrapped pin.
     #[must_use]
     pub fn into_inner(self) -> Pin {
-        self.1
+        self.0
     }
 
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
@@ -189,10 +142,6 @@ impl<Pin> ChipSelect for ChipSelectActiveLow<Pin>
 where
     Pin: OutputPin,
 {
-    fn is_auto_select(&self) -> bool {
-        self.is_auto_select()
-    }
-
     fn select(&mut self) {
         self.select()
     }
@@ -218,10 +167,6 @@ impl<Pin> ChipSelect for ChipSelectActiveHigh<Pin>
 where
     Pin: OutputPin,
 {
-    fn is_auto_select(&self) -> bool {
-        self.is_auto_select()
-    }
-
     fn select(&mut self) {
         self.select()
     }
