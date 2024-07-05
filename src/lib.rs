@@ -67,6 +67,11 @@ where
         self
     }
 
+    /// Indicates whether this instance is configured to auto-select the chip on communication.
+    pub fn is_auto_select(&self) -> bool {
+        self.0
+    }
+
     /// Selects the chip if auto-select is enabled.
     pub fn auto_select(&mut self) {
         if self.0 {
@@ -104,6 +109,11 @@ where
     pub fn with_auto_select(mut self, enabled: bool) -> Self {
         self.0 = enabled;
         self
+    }
+
+    /// Indicates whether this instance is configured to auto-select the chip on communication.
+    pub fn is_auto_select(&self) -> bool {
+        self.0
     }
 
     /// Selects the chip if auto-select is enabled.
@@ -151,3 +161,37 @@ where
 impl<Pin> ActiveLow for ChipSelectActiveLow<Pin> where Pin: OutputPin {}
 
 impl<Pin> ActiveHigh for ChipSelectActiveHigh<Pin> where Pin: OutputPin {}
+
+impl<Pin> ChipSelect for ChipSelectActiveLow<Pin>
+where
+    Pin: OutputPin,
+{
+    fn is_auto_select(&self) -> bool {
+        self.is_auto_select()
+    }
+
+    fn select(&mut self) {
+        self.select()
+    }
+
+    fn deselect(&mut self) {
+        self.deselect()
+    }
+}
+
+impl<Pin> ChipSelect for ChipSelectActiveHigh<Pin>
+where
+    Pin: OutputPin,
+{
+    fn is_auto_select(&self) -> bool {
+        self.is_auto_select()
+    }
+
+    fn select(&mut self) {
+        self.select()
+    }
+
+    fn deselect(&mut self) {
+        self.deselect()
+    }
+}
