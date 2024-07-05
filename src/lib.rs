@@ -13,9 +13,11 @@ compile_error!(
 compile_error!("A HAL feature (\"hal-0_2\" or \"hal-1_0\") must be enabled");
 
 #[cfg(feature = "hal-0_2")]
+#[cfg_attr(docsrs, doc(cfg(feature = "hal-0_2")))]
 use hal_0_2::digital::v2::OutputPin;
 
 #[cfg(feature = "hal-1_0")]
+#[cfg_attr(docsrs, doc(cfg(feature = "hal-1_0")))]
 use hal_1_0::digital::OutputPin;
 
 /// A chip-select trait.
@@ -38,6 +40,12 @@ pub trait ChipSelect {
     fn deselect(&mut self);
 }
 
+/// Marker trait to indicate that a pin is active low.
+pub trait ActiveLow {}
+
+/// Marker trait to indicate that a pin is active high.
+pub trait ActiveHigh {}
+
 /// A chip select pin with active-low behavior.
 pub struct ChipSelectActiveLow<Pin>(bool, Pin);
 
@@ -49,7 +57,7 @@ where
     Pin: OutputPin,
 {
     /// Initialize the chip select.
-    pub fn from<P>(pin: Pin) -> Self {
+    pub const fn new(pin: Pin) -> Self {
         Self(false, pin)
     }
 
@@ -75,6 +83,12 @@ where
     pub fn deselect(&mut self) {
         <Pin as OutputPin>::set_high(&mut self.1).ok();
     }
+
+    /// Consumes self and returns the wrapped pin.
+    #[must_use]
+    pub fn into_inner(self) -> Pin {
+        self.1
+    }
 }
 
 impl<Pin> ChipSelectActiveHigh<Pin>
@@ -82,7 +96,7 @@ where
     Pin: OutputPin,
 {
     /// Initialize the chip select.
-    pub fn from<P>(pin: Pin) -> Self {
+    pub const fn new(pin: Pin) -> Self {
         Self(false, pin)
     }
 
@@ -108,4 +122,32 @@ where
     pub fn deselect(&mut self) {
         <Pin as OutputPin>::set_low(&mut self.1).ok();
     }
+
+    /// Consumes self and returns the wrapped pin.
+    #[must_use]
+    pub fn into_inner(self) -> Pin {
+        self.1
+    }
 }
+
+impl<Pin> From<Pin> for ChipSelectActiveLow<Pin>
+where
+    Pin: OutputPin,
+{
+    fn from(value: Pin) -> Self {
+        Self::new(value)
+    }
+}
+
+impl<Pin> From<Pin> for ChipSelectActiveHigh<Pin>
+where
+    Pin: OutputPin,
+{
+    fn from(value: Pin) -> Self {
+        Self::new(value)
+    }
+}
+
+impl<Pin> ActiveLow for ChipSelectActiveLow<Pin> where Pin: OutputPin {}
+
+impl<Pin> ActiveHigh for ChipSelectActiveHigh<Pin> where Pin: OutputPin {}

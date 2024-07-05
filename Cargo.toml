@@ -1,12 +1,13 @@
 [package]
 name = "chip-select"
-version = "0.1.0"
+version = "0.1.0-alpha.1"
 description = "Chip select GPIO support traits"
 authors = ["Markus Mayer <widemeadows@gmail.com>"]
 categories = ["embedded", "no-std", "no-std::no-alloc", 'hardware-support']
 keywords = ["chip-select", "no-std", "embedded-hal"]
 homepage = "https://github.com/sunsided/chip-select"
 repository = "https://github.com/sunsided/chip-select"
+license = "EUPL-1.2 OR MIT OR Apache-2.0"
 rust-version = "1.64.0"
 edition = "2021"
 
@@ -26,5 +27,5 @@ version = "0.2.7"
 optional = true
 
 [package.metadata.docs.rs]
-all-features = true
+all-features = false
 rustdoc-args = ["--cfg", "docsrs"]
