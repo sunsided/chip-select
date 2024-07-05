@@ -1,5 +1,9 @@
 //! Chip-Select GPIO support traits.
 
+#![no_std]
+#![forbid(unsafe_code)]
+#![cfg_attr(docsrs, feature(doc_cfg))]
+
 /// A chip-select trait.
 pub trait ChipSelect {
     /// Indicates whether this instance is configured to auto-select the chip on communication.
@@ -19,4 +23,3 @@ pub trait ChipSelect {
     /// Deselects the chip, driving the line high.
     fn deselect(&mut self);
 }
-
