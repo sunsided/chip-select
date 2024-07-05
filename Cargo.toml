@@ -1,6 +1,6 @@
 [package]
 name = "chip-select"
-version = "0.1.0-alpha.1"
+version = "0.1.0"
 description = "Chip select GPIO support traits"
 authors = ["Markus Mayer <widemeadows@gmail.com>"]
 categories = ["embedded", "no-std", "no-std::no-alloc", 'hardware-support']
