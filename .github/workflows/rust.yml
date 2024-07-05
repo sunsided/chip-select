@@ -109,3 +109,25 @@ jobs:
         run: cargo test --doc --verbose --no-default-features --features=${{ matrix.hal }}
       - name: Run regular tests
         run: cargo test --tests --verbose --no-default-features --features=${{ matrix.hal }}
+
+  build-hals:
+    name: Build HAL supports
+    needs:
+      - lint
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        hal:
+          - hal-0_2,stm32f3xx-hal,stm32f3xx-hal/stm32f303xc
+    steps:
+      - uses: actions/checkout@v4
+      - name: Clippy
+        run: cargo clippy --no-default-features --features="${{ matrix.hal }}"
+      - name: Install dependencies
+        run: cargo fetch
+      - name: Build
+        run: cargo build --verbose --no-default-features --features="${{ matrix.hal }}"
+      - name: Run doctests
+        run: cargo test --doc --verbose --no-default-features --features="${{ matrix.hal }}"
+      - name: Run regular tests
+        run: cargo test --tests --verbose --no-default-features --features="${{ matrix.hal }}"
