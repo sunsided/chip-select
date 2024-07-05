@@ -80,6 +80,7 @@ where
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
     #[must_use]
     pub fn select_guard(&mut self) -> DeselectOnDrop<Self> {
+        self.select();
         DeselectOnDrop::from(self)
     }
 }
@@ -112,6 +113,7 @@ where
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
     #[must_use]
     pub fn select_guard(&mut self) -> DeselectOnDrop<Self> {
+        self.select();
         DeselectOnDrop::from(self)
     }
 }
@@ -159,7 +161,7 @@ where
 
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
     fn select_guard(&mut self) -> DeselectOnDrop<Self> {
-        DeselectOnDrop::from(self)
+        self.select_guard()
     }
 }
 
@@ -184,7 +186,7 @@ where
 
     /// Selects the device and returns a guard that, when dropped, deselects the chip.
     fn select_guard(&mut self) -> Self::Guard<'_> {
-        DeselectOnDrop::from(self)
+        self.select_guard()
     }
 }
 
