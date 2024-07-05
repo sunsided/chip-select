@@ -81,10 +81,15 @@ jobs:
       - codespell
       - lint
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        hal:
+          - hal-0_2
+          - hal-1_0
     steps:
       - uses: actions/checkout@v4
       - name: Build documentation
-        run: cargo doc --all-features
+        run: cargo doc --no-default-features --feature=${{ matrix.features.hal }}
 
   build-linux:
     name: Build on Linux
