@@ -118,7 +118,7 @@ jobs:
     strategy:
       matrix:
         hal:
-          - hal-0_2,stm32f3xx-hal,stm32f3xx-hal/stm32f303xc
+          - hal-0_2,stm32f303xc
     steps:
       - uses: actions/checkout@v4
       - name: Clippy

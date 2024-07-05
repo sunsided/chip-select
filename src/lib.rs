@@ -196,8 +196,8 @@ where
     }
 }
 
-#[cfg(feature = "stm32f3xx-hal")]
-#[cfg_attr(docsrs, doc(cfg(feature = "stm32f3xx-hal")))]
+#[cfg(feature = "stm32f303xc")]
+#[cfg_attr(docsrs, doc(cfg(feature = "stm32f303xc")))]
 impl<Pin> ChipSelectActiveLow<Pin>
 where
     Pin: OutputPin,
@@ -224,8 +224,8 @@ where
     }
 }
 
-#[cfg(feature = "stm32f3xx-hal")]
-#[cfg_attr(docsrs, doc(cfg(feature = "stm32f3xx-hal")))]
+#[cfg(feature = "stm32f303xc")]
+#[cfg_attr(docsrs, doc(cfg(feature = "stm32f303xc")))]
 impl<Pin> ChipSelectActiveHigh<Pin>
 where
     Pin: OutputPin,

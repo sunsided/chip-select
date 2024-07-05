@@ -15,7 +15,7 @@ edition = "2021"
 default = ["hal-1_0"]
 hal-1_0 = ["dep:hal-1_0"]
 hal-0_2 = ["dep:hal-0_2"]
-stm32f3xx-hal = ["dep:stm32f3xx-hal"]
+stm32f303xc = ["dep:stm32f3xx-hal", "stm32f3xx-hal/stm32f303xc"]
 
 [dependencies]
 stm32f3xx-hal = { version = "0.10.0", default-features = false, optional = true }
