@@ -13,10 +13,10 @@ compile_error!(
 compile_error!("A HAL feature (\"hal-0_2\" or \"hal-1_0\") must be enabled");
 
 #[cfg(feature = "hal-0_2")]
-extern crate hal_0_2 as hal;
+use hal_0_2::digital::v2::OutputPin;
 
 #[cfg(feature = "hal-1_0")]
-extern crate hal_1_0 as hal;
+use hal_1_0::digital::OutputPin;
 
 /// A chip-select trait.
 pub trait ChipSelect {
@@ -46,7 +46,7 @@ pub struct ChipSelectActiveHigh<Pin>(bool, Pin);
 
 impl<Pin> ChipSelectActiveLow<Pin>
 where
-    Pin: hal::digital::v2::OutputPin,
+    Pin: OutputPin,
 {
     /// Initialize the chip select.
     pub fn from<P>(pin: Pin) -> Self {
@@ -68,18 +68,18 @@ where
 
     /// Selects the chip, driving the line low.
     pub fn select(&mut self) {
-        <Pin as hal::digital::v2::OutputPin>::set_low(&mut self.1).ok();
+        <Pin as OutputPin>::set_low(&mut self.1).ok();
     }
 
     /// Deselects the chip, driving the line high.
     pub fn deselect(&mut self) {
-        <Pin as hal::digital::v2::OutputPin>::set_high(&mut self.1).ok();
+        <Pin as OutputPin>::set_high(&mut self.1).ok();
     }
 }
 
 impl<Pin> ChipSelectActiveHigh<Pin>
 where
-    Pin: hal::digital::v2::OutputPin,
+    Pin: OutputPin,
 {
     /// Initialize the chip select.
     pub fn from<P>(pin: Pin) -> Self {
@@ -101,11 +101,11 @@ where
 
     /// Selects the chip, driving the line high.
     pub fn select(&mut self) {
-        <Pin as hal::digital::v2::OutputPin>::set_high(&mut self.1).ok();
+        <Pin as OutputPin>::set_high(&mut self.1).ok();
     }
 
     /// Deselects the chip, driving the line low.
     pub fn deselect(&mut self) {
-        <Pin as hal::digital::v2::OutputPin>::set_low(&mut self.1).ok();
+        <Pin as OutputPin>::set_low(&mut self.1).ok();
     }
 }
