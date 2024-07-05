@@ -43,9 +43,9 @@ jobs:
       - name: Check format
         run: cargo fmt --check
       - name: Clippy (HAL 0.2)
-        run: cargo clippy --hal-0_2
+        run: cargo clippy --features=hal-0_2 --no-default-features
       - name: Clippy (HAL 1.0)
-        run: cargo clippy --hal-1_0
+        run: cargo clippy --features=hal-1_0 --no-default-features
 
   check-msrv:
     name: Check MSRV
