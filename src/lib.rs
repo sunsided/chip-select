@@ -22,6 +22,11 @@ use hal_1_0::digital::OutputPin;
 
 /// A chip-select trait.
 pub trait ChipSelect {
+    /// A guard that, when dropped, deselects the chip.
+    type Guard<'a>
+    where
+        Self: 'a;
+
     /// Indicates whether this instance is configured to auto-select the chip on communication.
     #[must_use]
     fn is_auto_select(&self) -> bool;
@@ -38,6 +43,9 @@ pub trait ChipSelect {
 
     /// Deselects the chip, driving the line high.
     fn deselect(&mut self);
+
+    /// Selects the device and returns a guard that, when dropped, deselects the chip.
+    fn select_guard(&mut self) -> Self::Guard<'_>;
 }
 
 /// Marker trait to indicate that a pin is active low.
@@ -94,6 +102,12 @@ where
     pub fn into_inner(self) -> Pin {
         self.1
     }
+
+    /// Selects the device and returns a guard that, when dropped, deselects the chip.
+    #[must_use]
+    pub fn select_guard(&mut self) -> DeselectOnDrop<Self> {
+        DeselectOnDrop::from(self)
+    }
 }
 
 impl<Pin> ChipSelectActiveHigh<Pin>
@@ -138,6 +152,12 @@ where
     pub fn into_inner(self) -> Pin {
         self.1
     }
+
+    /// Selects the device and returns a guard that, when dropped, deselects the chip.
+    #[must_use]
+    pub fn select_guard(&mut self) -> DeselectOnDrop<Self> {
+        DeselectOnDrop::from(self)
+    }
 }
 
 impl<Pin> From<Pin> for ChipSelectActiveLow<Pin>
@@ -166,6 +186,8 @@ impl<Pin> ChipSelect for ChipSelectActiveLow<Pin>
 where
     Pin: OutputPin,
 {
+    type Guard<'a> = DeselectOnDrop<'a, Self> where Pin: 'a;
+
     fn is_auto_select(&self) -> bool {
         self.is_auto_select()
     }
@@ -176,6 +198,11 @@ where
 
     fn deselect(&mut self) {
         self.deselect()
+    }
+
+    /// Selects the device and returns a guard that, when dropped, deselects the chip.
+    fn select_guard(&mut self) -> DeselectOnDrop<Self> {
+        DeselectOnDrop::from(self)
     }
 }
 
@@ -183,6 +210,8 @@ impl<Pin> ChipSelect for ChipSelectActiveHigh<Pin>
 where
     Pin: OutputPin,
 {
+    type Guard<'a> = DeselectOnDrop<'a, Self> where Pin: 'a;
+
     fn is_auto_select(&self) -> bool {
         self.is_auto_select()
     }
@@ -193,5 +222,33 @@ where
 
     fn deselect(&mut self) {
         self.deselect()
+    }
+
+    /// Selects the device and returns a guard that, when dropped, deselects the chip.
+    fn select_guard(&mut self) -> Self::Guard<'_> {
+        DeselectOnDrop::from(self)
+    }
+}
+
+/// A guard that deselects the chip when it is dropped.
+pub struct DeselectOnDrop<'a, T>(&'a mut T)
+where
+    T: ChipSelect;
+
+impl<'a, T> From<&'a mut T> for DeselectOnDrop<'a, T>
+where
+    T: ChipSelect,
+{
+    fn from(value: &'a mut T) -> Self {
+        Self(value)
+    }
+}
+
+impl<'a, T> Drop for DeselectOnDrop<'a, T>
+where
+    T: ChipSelect,
+{
+    fn drop(&mut self) {
+        self.0.deselect()
     }
 }
