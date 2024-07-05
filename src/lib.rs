@@ -195,3 +195,59 @@ where
         self.deselect()
     }
 }
+
+#[cfg(feature = "stm32f303xc")]
+#[cfg_attr(docsrs, doc(cfg(feature = "stm32f303xc")))]
+impl<Pin> ChipSelectActiveLow<Pin>
+where
+    Pin: OutputPin,
+{
+    /// Sets the specified GPIO into a push-pull output and wraps it into an active-low chip-select.
+    #[must_use]
+    pub fn stm32f3xx_gpio<Gpio, Index, Mode>(
+        pin: stm32f3xx_hal::gpio::Pin<Gpio, Index, Mode>,
+        moder: &mut Gpio::MODER,
+        otyper: &mut Gpio::OTYPER,
+    ) -> ChipSelectActiveLow<
+        stm32f3xx_hal::gpio::Pin<
+            Gpio,
+            Index,
+            stm32f3xx_hal::gpio::Output<stm32f3xx_hal::gpio::PushPull>,
+        >,
+    >
+    where
+        Gpio: stm32f3xx_hal::gpio::marker::GpioStatic,
+        Index: stm32f3xx_hal::gpio::marker::Index,
+    {
+        let pin = pin.into_push_pull_output(moder, otyper);
+        ChipSelectActiveLow::new(pin)
+    }
+}
+
+#[cfg(feature = "stm32f303xc")]
+#[cfg_attr(docsrs, doc(cfg(feature = "stm32f303xc")))]
+impl<Pin> ChipSelectActiveHigh<Pin>
+where
+    Pin: OutputPin,
+{
+    /// Sets the specified GPIO into a push-pull output and wraps it into an active-high chip-select.
+    #[must_use]
+    pub fn stm32f3xx_gpio<Gpio, Index, Mode>(
+        pin: stm32f3xx_hal::gpio::Pin<Gpio, Index, Mode>,
+        moder: &mut Gpio::MODER,
+        otyper: &mut Gpio::OTYPER,
+    ) -> ChipSelectActiveHigh<
+        stm32f3xx_hal::gpio::Pin<
+            Gpio,
+            Index,
+            stm32f3xx_hal::gpio::Output<stm32f3xx_hal::gpio::PushPull>,
+        >,
+    >
+    where
+        Gpio: stm32f3xx_hal::gpio::marker::GpioStatic,
+        Index: stm32f3xx_hal::gpio::marker::Index,
+    {
+        let pin = pin.into_push_pull_output(moder, otyper);
+        ChipSelectActiveHigh::new(pin)
+    }
+}
