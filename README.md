@@ -10,7 +10,8 @@
 [![MIT licensed][license-mit-image]][license-mit-link]
 
 Generic Rust GPIO pin support for chip select purposes, intended for use with
-platform-agnostic drivers written using [embedded-hal].
+platform-agnostic drivers written using [embedded-hal]. Supports `embedded-hal` version
+`0.2` and `1.0`.
 
 ## Requirements
 
