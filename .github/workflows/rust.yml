@@ -85,7 +85,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Build documentation
-        run: cargo doc --no-default-features --features=${{ matrix.features.hal }}
+        run: cargo doc --no-default-features --features=${{ matrix.hal }}
 
   build-linux:
     name: Build on Linux
@@ -100,12 +100,12 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Clippy
-        run: cargo clippy --no-default-features --features=${{ matrix.features.hal }}
+        run: cargo clippy --no-default-features --features=${{ matrix.hal }}
       - name: Install dependencies
         run: cargo fetch
       - name: Build
-        run: cargo build --verbose --no-default-features --features=${{ matrix.features.hal }}
+        run: cargo build --verbose --no-default-features --features=${{ matrix.hal }}
       - name: Run doctests
-        run: cargo test --doc --verbose --no-default-features --features=${{ matrix.features.hal }}
+        run: cargo test --doc --verbose --no-default-features --features=${{ matrix.hal }}
       - name: Run regular tests
-        run: cargo test --tests --verbose --no-default-features --features=${{ matrix.features.hal }}
+        run: cargo test --tests --verbose --no-default-features --features=${{ matrix.hal }}
